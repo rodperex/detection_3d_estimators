@@ -1,0 +1,118 @@
+# Typical sizes of the things a detector finds, for the box_size estimator: the distance to a
+# detection is the focal length times its real size over its size in the image (pinhole camera).
+#
+#   <name>: {height: <m>, width: <m>, aliases: [<other names>]}
+#
+# height: its vertical size as the camera sees it (a person standing; a cup upright).
+# width:  its horizontal size, used when the box is cut by the top or the bottom of the image
+#         (then the height in the image is not the whole height). Omit it if it varies too much
+#         with the point of view.
+# aliases: other names of the same thing (singular, lowercase). A label is matched by the name
+#         or alias it contains (the head of the noun phrase: "person with a red shirt" -> person,
+#         "red coffee cup" -> cup); see detection_3d_estimators/object_sizes.py.
+#
+# The values are typical adult / household sizes: the error of a distance is the error of the
+# size (a person of 1.60 m taken as 1.75 m: 9 % too far). Override them for your setting with the
+# parameter `sizes` of the node, or give your own file (`object_sizes_file`).
+#
+# The first block are the 80 classes of COCO (the classes of YOLO models trained on COCO); the
+# second, other things common indoors, for open-vocabulary detectors.
+
+# --- COCO
+person: {height: 1.70, width: 0.50, aliases: [man, woman, people, human, boy, girl, child, kid, adult, pedestrian, patient, nurse, doctor]}
+bicycle: {height: 1.05, width: 1.70, aliases: [bike]}
+car: {height: 1.50, width: 1.80}
+motorcycle: {height: 1.10, width: 2.00, aliases: [motorbike]}
+airplane: {height: 10.0, width: 35.0, aliases: [aeroplane, plane]}
+bus: {height: 3.00, width: 2.50}
+train: {height: 4.00, width: 3.00}
+truck: {height: 3.00, width: 2.50}
+boat: {height: 2.00, width: 5.00}
+traffic light: {height: 0.90, width: 0.30}
+fire hydrant: {height: 0.70, width: 0.35, aliases: [hydrant]}
+stop sign: {height: 0.75, width: 0.75}
+parking meter: {height: 1.40, width: 0.30}
+bench: {height: 0.85, width: 1.50}
+bird: {height: 0.20, width: 0.25}
+cat: {height: 0.30, width: 0.45}
+dog: {height: 0.55, width: 0.70}
+horse: {height: 1.60, width: 2.20}
+sheep: {height: 0.90, width: 1.20}
+cow: {height: 1.40, width: 2.20}
+elephant: {height: 3.00, width: 5.00}
+bear: {height: 1.20, width: 1.80}
+zebra: {height: 1.40, width: 2.20}
+giraffe: {height: 4.80, width: 3.00}
+backpack: {height: 0.45, width: 0.30, aliases: [rucksack]}
+umbrella: {height: 0.90, width: 1.00}
+handbag: {height: 0.30, width: 0.35, aliases: [bag, purse]}
+tie: {height: 0.45, width: 0.09, aliases: [necktie]}
+suitcase: {height: 0.65, width: 0.45, aliases: [luggage]}
+frisbee: {height: 0.25, width: 0.25}
+skis: {height: 1.70, width: 0.10, aliases: [ski]}
+snowboard: {height: 1.55, width: 0.25}
+sports ball: {height: 0.22, width: 0.22, aliases: [ball, football, soccer ball, basketball]}
+kite: {height: 1.00, width: 1.00}
+baseball bat: {height: 0.85, width: 0.07, aliases: [bat]}
+baseball glove: {height: 0.30, width: 0.25, aliases: [glove]}
+skateboard: {height: 0.80, width: 0.20}
+surfboard: {height: 2.00, width: 0.55}
+tennis racket: {height: 0.68, width: 0.27, aliases: [racket]}
+bottle: {height: 0.25, width: 0.07, aliases: [water bottle]}
+wine glass: {height: 0.20, width: 0.08}
+cup: {height: 0.10, width: 0.08, aliases: [mug, glass, coffee cup]}
+fork: {height: 0.19, width: 0.03}
+knife: {height: 0.22, width: 0.03}
+spoon: {height: 0.17, width: 0.04}
+bowl: {height: 0.08, width: 0.16}
+banana: {height: 0.05, width: 0.19}
+apple: {height: 0.08, width: 0.08}
+sandwich: {height: 0.06, width: 0.12}
+orange: {height: 0.08, width: 0.08}
+broccoli: {height: 0.15, width: 0.12}
+carrot: {height: 0.03, width: 0.18}
+hot dog: {height: 0.05, width: 0.18}
+pizza: {height: 0.04, width: 0.30}
+donut: {height: 0.04, width: 0.09, aliases: [doughnut]}
+cake: {height: 0.10, width: 0.22}
+chair: {height: 0.90, width: 0.50, aliases: [seat, armchair]}
+couch: {height: 0.85, width: 2.00, aliases: [sofa]}
+potted plant: {height: 0.60, width: 0.40, aliases: [plant, flower pot]}
+bed: {height: 0.60, width: 1.50}
+dining table: {height: 0.75, width: 1.40, aliases: [table, desk]}
+toilet: {height: 0.75, width: 0.40}
+tv: {height: 0.60, width: 1.00, aliases: [television, monitor, screen]}
+laptop: {height: 0.24, width: 0.33, aliases: [computer, notebook]}
+mouse: {height: 0.04, width: 0.06}
+remote: {height: 0.03, width: 0.05, aliases: [remote control]}
+keyboard: {height: 0.03, width: 0.44}
+cell phone: {height: 0.15, width: 0.07, aliases: [phone, mobile phone, smartphone]}
+microwave: {height: 0.30, width: 0.50}
+oven: {height: 0.60, width: 0.60}
+toaster: {height: 0.20, width: 0.28}
+sink: {height: 0.20, width: 0.60}
+refrigerator: {height: 1.80, width: 0.70, aliases: [fridge]}
+book: {height: 0.24, width: 0.17}
+clock: {height: 0.30, width: 0.30}
+vase: {height: 0.30, width: 0.15}
+scissors: {height: 0.20, width: 0.08}
+teddy bear: {height: 0.35, width: 0.25, aliases: [teddy, stuffed animal, toy]}
+hair drier: {height: 0.25, width: 0.10, aliases: [hair dryer, hairdryer]}
+toothbrush: {height: 0.19, width: 0.02}
+
+# --- Other things common indoors (open vocabulary)
+door: {height: 2.03, width: 0.82}
+window: {height: 1.20, width: 1.00}
+wheelchair: {height: 0.95, width: 0.65}
+walker: {height: 0.85, width: 0.60, aliases: [walking frame, rollator]}
+cane: {height: 0.90, width: 0.03, aliases: [walking stick, stick]}
+box: {height: 0.30, width: 0.40, aliases: [cardboard box, package]}
+lamp: {height: 0.50, width: 0.30}
+shelf: {height: 1.80, width: 0.80, aliases: [bookshelf, bookcase, cabinet]}
+trash can: {height: 0.60, width: 0.35, aliases: [bin, waste bin, rubbish bin]}
+pillow: {height: 0.15, width: 0.60, aliases: [cushion]}
+plate: {height: 0.03, width: 0.26, aliases: [dish]}
+glasses: {height: 0.05, width: 0.14, aliases: [spectacles]}
+hat: {height: 0.15, width: 0.30, aliases: [cap]}
+shoe: {height: 0.12, width: 0.28, aliases: [shoes, sneaker, boot]}
+robot: {height: 0.58, width: 0.30}
