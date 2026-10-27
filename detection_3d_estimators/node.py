@@ -22,6 +22,12 @@ depth_anything with a single image; see estimators.py),
 in the frame of the image (the header of the detections), with the same id, class and score.
 It also publishes a sphere per detection for RViz (detection_centroid_markers).
 
+Any detector that fills a Detection2DArray works (an open-vocabulary detector, a YOLO...): the box
+in pixels of the camera image (center and size), the class in results[0].hypothesis.class_id, and
+optionally a tracker id in id. A class given as a number (e.g. "0", the index of the detector's
+classes) is named with class_names, so that box_size finds its size; detections whose header has
+no frame_id are placed in camera_frame_id.
+
 The camera calibration comes from a CameraInfo topic (camera_info_topic), or from the
 parameter camera_intrinsics ([fx, fy, cx, cy]) when the CameraInfo does not arrive.
 See the README for every parameter.
@@ -85,6 +91,11 @@ class Detection3DEstimator(Node):
             ('depth_window_px', 5),
             ('camera_intrinsics', [0.0]),              # [fx, fy, cx, cy]: instead of CameraInfo
             ('camera_frame_is_optical', True),
+            # The frame of the detections whose header has none (empty: left empty)
+            ('camera_frame_id', ''),
+            # The names of the classes of a detector that gives them as numbers (class_id "0" is
+            # class_names[0], e.g. the 80 of COCO for a YOLO): the box_size table is by name
+            ('class_names', ['']),
             # ray
             ('ray_distance_m', 1.0),
             # box_size
@@ -185,7 +196,9 @@ class Detection3DEstimator(Node):
         detections = [d for d in msg.detections if d.results]
         boxes = [Box(d.bbox.center.position.x, d.bbox.center.position.y, d.bbox.size_x,
                      d.bbox.size_y) for d in detections]
-        labels = [d.results[0].hypothesis.class_id for d in detections]
+        labels = [self.class_name(d.results[0].hypothesis.class_id) for d in detections]
+        if not msg.header.frame_id and self.p['camera_frame_id']:
+            msg.header.frame_id = self.p['camera_frame_id']
         image = None
         if self.estimator.needs_image and detections:
             if self.last_image is None:
@@ -231,6 +244,13 @@ class Detection3DEstimator(Node):
         self.previous_markers = len(out.detections)
         self.det3d_pub.publish(out)
         self.marker_pub.publish(markers)
+
+    def class_name(self, class_id):
+        """The name of a class: class_names[i] for a class given as the number i."""
+        names = [n for n in self.p['class_names'] if n]
+        if names and class_id.strip().isdigit() and int(class_id) < len(names):
+            return names[int(class_id)]
+        return class_id
 
     def marker(self, header, marker_id, x, y, z):
         marker = Marker(header=header, ns=self.p['centroid_marker_namespace'], id=marker_id,

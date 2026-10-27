@@ -32,6 +32,7 @@ ARGS = {
   'camera_intrinsics': ('', '"[fx, fy, cx, cy]" instead of the CameraInfo (empty: CameraInfo)'),
   'camera_frame_is_optical': ('true', 'The frame of the images is optical (z forward); false: '
                                       'x forward, y left, z up'),
+  'camera_frame_id': ('', 'The frame of the detections whose header has none (empty: none)'),
   'depth_image_topic': ('/depth_image', 'depth_image: the depth image, aligned with the color '
                                         'image (16UC1 mm or 32FC1 m)'),
   'image_topic': ('/image_rgb', 'depth_anything: the color image'),
@@ -49,6 +50,7 @@ def launch_setup(context):
     'detections_3d_topic': value['detections_3d_topic'],
     'camera_info_topic': value['camera_info_topic'],
     'camera_frame_is_optical': value['camera_frame_is_optical'].lower() in ('true', '1'),
+    'camera_frame_id': value['camera_frame_id'],
     'depth_image_topic': value['depth_image_topic'],
     'image_topic': value['image_topic'],
     'unknown_distance_m': float(value['unknown_distance_m']),

@@ -94,6 +94,30 @@ detection_3d_estimator:
     unknown_distance_m: 2.0
 ```
 
+## With any detector (a YOLO, for example)
+
+The node takes the detections of any detector that publishes a `vision_msgs/Detection2DArray`:
+
+- the box in pixels of the camera image whose calibration it has (`bbox.center.position`,
+  `bbox.size_x`, `bbox.size_y`); a detector that runs on a resized image must give the boxes in
+  the size of the original image, as most ROS wrappers do;
+- the class in `results[0].hypothesis.class_id`, by name (`person`) or by number (`0`); a number
+  is named with `class_names` (for a YOLO trained on COCO: `config/class_names_coco.yaml`), which
+  only `box_size` needs;
+- a tracker id in `id`, if the detector has a tracker (empty is fine: the output keeps it);
+- the frame of the camera in `header.frame_id`; if the detector leaves it empty, give it with
+  `camera_frame_id`.
+
+For a YOLO that publishes COCO indices on `/yolo/detections`:
+
+```bash
+ros2 launch detection_3d_estimators detection_3d_estimator.launch.py estimator:=box_size \
+  detections_2d_topic:=/yolo/detections camera_info_topic:=/camera/camera_info \
+  params_file:=$(ros2 pkg prefix detection_3d_estimators)/share/detection_3d_estimators/config/class_names_coco.yaml
+```
+
+`test/test_generic_detector.py` runs the node with detections of this kind.
+
 ## What it publishes
 
 | Topic | Type | Content |
@@ -126,6 +150,8 @@ to `unknown_distance_m`.
 | `camera_info_topic` | `/camera_info` | all | The calibration of the camera of the detections (the first message is used) |
 | `camera_intrinsics` | `[0.0]` (none) | all | `[fx, fy, cx, cy]` instead of the CameraInfo, when it does not arrive. The image size is then taken as twice the principal point |
 | `camera_frame_is_optical` | `true` | all | The convention of the output point (above) |
+| `camera_frame_id` | (empty) | all | The frame of the output for detections whose header has no `frame_id` |
+| `class_names` | (none) | all | The names of the classes of a detector that gives them as numbers: `class_id` `"0"` is the first name. Only to find the size (`box_size`); the output keeps the class as given. `config/class_names_coco.yaml` has the 80 of COCO |
 | `depth_image_topic` | `/depth_image` | `depth_image` | The depth image: `16UC1` in millimetres or `32FC1` in metres, aligned with the color image |
 | `depth_window_px` | `5` | `depth_image` | The region of the box is at least (2 × this + 1)² pixels |
 | `depth_region` | `0.6` | `depth_image`, `depth_anything` | The central part of the box whose depths are used (of its width and height) |
